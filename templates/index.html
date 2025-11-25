@@ -1,0 +1,114 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to image generator</title>
+</head>
+<body>
+    <h1>Text-to-image generator</h1>
+    <div>
+        <label for="prompt">Enter your description</label>
+        <input type="text" id="prompt" name="prompt" />
+        <button onclick="generateImage()">Generate img</button>
+    </div>
+    <div id="img-container"></div>
+
+    <script>
+        async function generateImage() {
+            const prompt = document.getElementById('prompt').value;
+            const imgContainer = document.getElementById('img-container');
+            const response = await fetch('/generate_img', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ prompt: prompt}),
+            });
+            const data = await response.json();
+            imgContainer.innerHTML = `<img src="${data.image_url}" alt="Generated Image" />`;
+        }
+    </script>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to image</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 10px;
+    }
+    input {
+      width: 300px;
+      padding: 8px;
+    }
+    button {
+      padding: 8px 15px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    #image_container {
+      margin-top: 30px;
+    }
+    #image_container img {
+      max-width: 512px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+    <h1>Text to image generator</h1>
+    <div>
+        <label for="prompt">Enter your description</label>
+        <input type="text" id="prompt" name="prompt">
+        <button onclick="generateImage()">Generate Image</button>
+    </div>
+    <div id="image_container"></div>
+
+    
+    <script>
+        async function generateImage(){
+            const prompt = document.getElementById("prompt").value.trim();
+            const imageContainer = document.getElementById("image_container");
+
+            if (!prompt) {
+                imageContainer.innerHTML = "<p style='color:red;'>Please enter a description first!</p>";
+                return;
+            }
+            imageContainer.innerHTML = "<p>Generating image... please wait</p>";
+            try{
+                const response=await fetch('/generate_img',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({prompt:prompt})
+            }); 
+            const data=await response.json();
+            if (data.image_url) {
+                // Display the generated image
+                imageContainer.innerHTML = `
+                    <h3>Generated Image:</h3>
+                    <img src="${data.image_url}" alt="Generated Image">
+                `;
+                } else {
+                imageContainer.innerHTML = `<p style="color:red;">Error: ${data.error || "Something went wrong"}</p>`;
+                }
+            }
+                catch (error) {
+                imageContainer.innerHTML = `<p style="color:red;">Failed to connect to server: ${error.message}</p>`;
+                }
+            }
+
+        
+    </script>
+</body>
+</html>
